@@ -1,15 +1,26 @@
+/*
+ * 
+ */
 import java.util.Scanner;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class COSC603Project1.
+ */
 public class COSC603Project1 {
 
 	/**
-	 * @param args
-	 *            the command line arguments
+	 * The main method.
+	 *
+	 * @param args            the command line arguments
 	 */
 	public static void main(String[] args) {
 		initialize();
 	}
 
+	/**
+	 * Initialize.
+	 */
 	private static void initialize() {
 
 		double dryingFactor = 0;
@@ -177,46 +188,107 @@ public class COSC603Project1 {
 		}
 	}
 
+	/**
+	 * Gets the dry bulb temperature.
+	 *
+	 * @return the dry bulb temperature
+	 */
 	private static double getDryBulbTemperature() {
 		return parseStringToDouble(promptUser("Enter the dry bulb temperature:"));
 	}
 
+	/**
+	 * Gets the wet bulb temperature.
+	 *
+	 * @return the wet bulb temperature
+	 */
 	private static double getWetBulbTemperature() {
 		return parseStringToDouble(promptUser("Enter the wet bulb temperature:"));
 	}
 
+	/**
+	 * Gets the wind speed.
+	 *
+	 * @return the wind speed
+	 */
 	private static double getWindSpeed() {
 		return parseStringToDouble(promptUser("Enter Wind Speed: "));
 	}
 
+	/**
+	 * Gets the builds the up index.
+	 *
+	 * @return the builds the up index
+	 */
 	private static double getBuildUpIndex() {
 		return parseStringToDouble(promptUser("Enter Build Up Index: "));
 	}
 
+	/**
+	 * Gets the checks if is herb.
+	 *
+	 * @return the checks if is herb
+	 */
 	private static int getIsHerb() {
 		return parseStringToInt(promptUser("Enter Herb Numer; 1=Cured 2=Transition 3=Green: "));
 	}
 
+	/**
+	 * Gets the grass spread index.
+	 *
+	 * @return the grass spread index
+	 */
 	private static double getGrassSpreadIndex() {
 		return parseStringToDouble(promptUser("Enter Grass Spread Index: "));
 	}
 
+	/**
+	 * Gets the timber spread index.
+	 *
+	 * @return the timber spread index
+	 */
 	private static double getTimberSpreadIndex() {
 		return parseStringToDouble(promptUser("Enter Timber Spead Index: "));
 	}
 
+	/**
+	 * Gets the checks if is snow.
+	 *
+	 * @return the checks if is snow
+	 */
 	private static boolean getIsSnow() {
 		return checkAnswer(promptUser("Is there snow? Yes/No"));
 	}
 
+	/**
+	 * Gets the precip.
+	 *
+	 * @return the precip
+	 */
 	private static double getPrecip() {
 		return parseStringToDouble(promptUser("Enter Precip:"));
 	}
 
+	/**
+	 * Calculate build up index.
+	 *
+	 * @param precip the precip
+	 * @param BUO the buo
+	 * @return the double
+	 */
 	private static double calculateBuildUpIndex(double precip, double BUO) {
 		return -50 * (Math.log(1 - (Math.exp(-BUO / 50.))) * Math.exp(1.175 * (precip - .1)));
 	}
 
+	/**
+	 * Calculate fine feul moisture.
+	 *
+	 * @param diff the diff
+	 * @param a the a
+	 * @param b the b
+	 * @param c the c
+	 * @return the double
+	 */
 	private static double calculateFineFeulMoisture(double diff, double a[], double b[], double c[]) {
 		int temp = 0;
 		for (int i = 1; i <= 3; i++) {
@@ -231,6 +303,13 @@ public class COSC603Project1 {
 		return b[temp] * Math.exp(a[temp] * diff);
 	}
 
+	/**
+	 * Calculate fine feul moisture herb stage.
+	 *
+	 * @param fineFeulMoisture the fine feul moisture
+	 * @param isHerb the is herb
+	 * @return the double
+	 */
 	private static double calculateFineFeulMoistureHerbStage(double fineFeulMoisture, int isHerb) {
 		if (fineFeulMoisture - .1 < 0) {
 			fineFeulMoisture = 0;
@@ -238,6 +317,13 @@ public class COSC603Project1 {
 		return (fineFeulMoisture + isHerb - 1) * 5;
 	}
 
+	/**
+	 * Calculate drying factor.
+	 *
+	 * @param fineFeulMoisture the fine feul moisture
+	 * @param d the d
+	 * @return the double
+	 */
 	private static double calculateDryingFactor(double fineFeulMoisture, double d[]) {
 		for (int i = 1; i <= 6; i++) {
 			if (fineFeulMoisture - d[i] > 0) {
@@ -247,31 +333,78 @@ public class COSC603Project1 {
 		return 7;
 	}
 
+	/**
+	 * Calculate adjusted day fuel moisture.
+	 *
+	 * @param fineFeulMoisture the fine feul moisture
+	 * @param buildUpIndex the build up index
+	 * @return the double
+	 */
 	private static double calculateAdjustedDayFuelMoisture(double fineFeulMoisture, double buildUpIndex) {
 		return 0.9 * fineFeulMoisture + 0.5 + 9.5 * Math.exp(-buildUpIndex / 50);
 	}
 
+	/**
+	 * Calculate grass and timber spread index.
+	 *
+	 * @param indexBasedOnSpeed the index based on speed
+	 * @param x the x
+	 * @param windSpeed the wind speed
+	 * @param ADFMOrFFM the ADFM or ffm
+	 * @return the double
+	 */
 	private static double calculateGrassAndTimberSpreadIndex(double indexBasedOnSpeed, int x, double windSpeed,
 			double ADFMOrFFM) {
 		return indexBasedOnSpeed * (windSpeed + x) * Math.pow((33. - ADFMOrFFM), 1.65 - 3);
 	}
 
+	/**
+	 * Calculate fire load rating.
+	 *
+	 * @param timberSpreadIndex the timber spread index
+	 * @param buildUpIndex the build up index
+	 * @return the double
+	 */
 	private static double calculateFireLoadRating(double timberSpreadIndex, double buildUpIndex) {
 		return 1.75 * Math.log10(timberSpreadIndex) + 0.32 * Math.log10(buildUpIndex) - 1.640;
 	}
 
+	/**
+	 * Check answer.
+	 *
+	 * @param answer the answer
+	 * @return true, if successful
+	 */
 	private static boolean checkAnswer(String answer) {
 		return answer.toUpperCase().equals("Y") || answer.toUpperCase().equals("YES");
 	}
 
+	/**
+	 * Parses the string to double.
+	 *
+	 * @param answer the answer
+	 * @return the double
+	 */
 	private static double parseStringToDouble(String answer) {
 		return Double.parseDouble(answer);
 	}
 
+	/**
+	 * Parses the string to int.
+	 *
+	 * @param answer the answer
+	 * @return the int
+	 */
 	private static int parseStringToInt(String answer) {
 		return Integer.parseInt(answer);
 	}
 
+	/**
+	 * Prompt user.
+	 *
+	 * @param prompt the prompt
+	 * @return the string
+	 */
 	private static String promptUser(String prompt) {
 		String input = "";
 		Scanner scan = new Scanner(System.in);
@@ -282,6 +415,23 @@ public class COSC603Project1 {
 		return input;
 	}
 
+	/**
+	 * Prints the output.
+	 *
+	 * @param dryingFactor the drying factor
+	 * @param fineFeulMoisture the fine feul moisture
+	 * @param adjustedDayFuelMoisture the adjusted day fuel moisture
+	 * @param fireLoadRating the fire load rating
+	 * @param dryBulbTemperature the dry bulb temperature
+	 * @param wetBulbTemperature the wet bulb temperature
+	 * @param isSnow the is snow
+	 * @param precip the precip
+	 * @param windSpeed the wind speed
+	 * @param buildUpIndex the build up index
+	 * @param isHerb the is herb
+	 * @param grassSpreadIndex the grass spread index
+	 * @param timberSpreadIndex the timber spread index
+	 */
 	private static void printOutput(double dryingFactor, double fineFeulMoisture, double adjustedDayFuelMoisture,
 			double fireLoadRating, double dryBulbTemperature, double wetBulbTemperature, boolean isSnow, double precip,
 			double windSpeed, double buildUpIndex, int isHerb, double grassSpreadIndex, double timberSpreadIndex) {
@@ -302,6 +452,11 @@ public class COSC603Project1 {
 
 	}
 
+	/**
+	 * Prints the.
+	 *
+	 * @param str the str
+	 */
 	private static void print(String str) {
 		System.out.println(str);
 	}
