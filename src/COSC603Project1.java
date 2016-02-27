@@ -273,10 +273,13 @@ public class COSC603Project1 {
 	}
 
 	private static String promptUser(String prompt) {
+		String input = "";
 		Scanner scan = new Scanner(System.in);
 
 		System.out.println(prompt);
-		return scan.nextLine();
+		input = scan.nextLine();
+		//scan.close();
+		return input;
 	}
 
 	private static void printOutput(double dryingFactor, double fineFeulMoisture, double adjustedDayFuelMoisture,
