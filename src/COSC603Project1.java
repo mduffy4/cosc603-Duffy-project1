@@ -28,29 +28,11 @@ public class COSC603Project1 {
 		double adjustedDayFuelMoisture = 99;
 		double fireLoadRating = 0;
 		double diff = 0;
-
-		double[] a = new double[5];
-		double[] b = new double[5];
-		double[] c = new double[4];
-		double[] d = new double[7];
-
-		a[1] = -0.185900;
-		a[2] = -0.85900;
-		a[3] = -0.059660;
-		a[4] = -0.077373;
-		b[1] = -30.0;
-		b[2] = 19.2;
-		b[3] = 13.8;
-		b[4] = 22.5;
-		c[1] = 4.5;
-		c[2] = 12.5;
-		c[3] = 27.5;
-		d[1] = 16.0;
-		d[2] = 10.0;
-		d[3] = 7.0;
-		d[4] = 5.0;
-		d[5] = 4.0;
-		d[6] = 3.0;
+		
+		double[] a = createArrayA();
+		double[] b = createArrayB();
+		double[] c = createArrayC();
+		double[] d = createArrayD();
 
 		boolean isSnow = getIsSnow();
 		double dryBulbTemperature = getDryBulbTemperature();
@@ -188,6 +170,43 @@ public class COSC603Project1 {
 		}
 	}
 
+	private static double[] createArrayC() {
+		double[] c = new double[4];
+		c[1] = 4.5;
+		c[2] = 12.5;
+		c[3] = 27.5;
+		return c;
+	}
+
+	private static double[] createArrayB() {
+		double[] b = new double[5];
+				b[1] = -30.0;
+				b[2] = 19.2;
+				b[3] = 13.8;
+				b[4] = 22.5;
+		return b;
+	}
+
+	private static double[] createArrayA() {
+		double[] a = new double[5];
+				a[1] = -0.185900;
+				a[2] = -0.85900;
+				a[3] = -0.059660;
+				a[4] = -0.077373;
+		return a;
+	}
+
+	private static double[] createArrayD() {
+		double[] d = new double[7];
+		d[1] = 16.0;
+		d[2] = 10.0;
+		d[3] = 7.0;
+		d[4] = 5.0;
+		d[5] = 4.0;
+		d[6] = 3.0;
+		return d;
+	}
+
 	/**
 	 * Gets the dry bulb temperature.
 	 *
@@ -290,6 +309,12 @@ public class COSC603Project1 {
 	 * @return the double
 	 */
 	private static double calculateFineFeulMoisture(double diff, double a[], double b[], double c[]) {
+		int temp = getTemp(diff, c);
+
+		return b[temp] * Math.exp(a[temp] * diff);
+	}
+
+	private static int getTemp(double diff, double[] c) {
 		int temp = 0;
 		for (int i = 1; i <= 3; i++) {
 			if (diff - c[i] <= 0) {
@@ -299,8 +324,7 @@ public class COSC603Project1 {
 				temp = 4;
 			}
 		}
-
-		return b[temp] * Math.exp(a[temp] * diff);
+		return temp;
 	}
 
 	/**
@@ -311,10 +335,15 @@ public class COSC603Project1 {
 	 * @return the double
 	 */
 	private static double calculateFineFeulMoistureHerbStage(double fineFeulMoisture, int isHerb) {
+		fineFeulMoisture = checkFineFeulMoistureNotLessThanZero(fineFeulMoisture);
+		return (fineFeulMoisture + isHerb - 1) * 5;
+	}
+
+	private static double checkFineFeulMoistureNotLessThanZero(double fineFeulMoisture) {
 		if (fineFeulMoisture - .1 < 0) {
 			fineFeulMoisture = 0;
 		}
-		return (fineFeulMoisture + isHerb - 1) * 5;
+		return fineFeulMoisture;
 	}
 
 	/**
